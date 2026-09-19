@@ -18,15 +18,13 @@ HealthGrid IQ is an enterprise-grade, HIPAA-compliant clinical imaging platform 
 - **Mapping**: Leaflet + OpenStreetMap + OSRM routing
 - **Icons**: Lucide React
 
-## Documentation Guides
+## Documentation
 
-| Guide | Description |
+| Document | Description |
 | :--- | :--- |
-| **[`WORKFLOW_GUIDE.md`](./WORKFLOW_GUIDE.md)** | Complete clinical & operational workflow: Static clinics vs Mobile Screening Bus outreach, On-board MO fast-track vs Teleradiology escalation. |
-| **[`ACCOUNTS_GUIDE.md`](./ACCOUNTS_GUIDE.md)** | System user registry, demo login credentials, and assigned healthcare facilities. |
-| **[`DOCKER_GUIDE.md`](./DOCKER_GUIDE.md)** | On-premise Docker container deployment instructions for hospital MIS/IT teams. |
-| **[`DEPLOYMENT_GUIDE.md`](./DEPLOYMENT_GUIDE.md)** | Vercel and Firebase cloud production deployment procedures. |
 | **[`DOCUMENTATION.md`](./DOCUMENTATION.md)** | Comprehensive system architecture, modules, and component specifications. |
+| **[`PRODUCTION_DEPLOYMENT.md`](./PRODUCTION_DEPLOYMENT.md)** | Production deployment instructions and environment configuration. |
+| **[`IAS_INTEGRATION.md`](./IAS_INTEGRATION.md)** | Intelligent Appointment Scheduling integration specifications. |
 
 ## Quick Start
 
