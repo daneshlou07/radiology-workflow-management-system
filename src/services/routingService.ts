@@ -6,6 +6,11 @@ import {
   ImagingModality,
   RoutingRecommendation,
 } from '../types';
+import {
+  getDirections as getGoogleDirections,
+  geocodeAddress as geocodeWithGoogle,
+  useGoogleMaps,
+} from './googleMapsService';
 
 /**
  * Calculates Haversine distance in kilometers between two lat/lon coordinates.
@@ -73,6 +78,17 @@ export async function getRoute(
   toLat: number,
   toLon: number
 ): Promise<RouteInfo> {
+  if (useGoogleMaps) {
+    try {
+      const googleRoute = await getGoogleDirections(fromLat, fromLon, toLat, toLon);
+      if (googleRoute && googleRoute.polylineCoords && googleRoute.polylineCoords.length > 0) {
+        return googleRoute;
+      }
+    } catch (err) {
+      console.warn('Google Directions failed, using fallback:', err);
+    }
+  }
+
   const distance = calculateHaversineDistance(fromLat, fromLon, toLat, toLon);
   const roadFactor = 1.3;
   const adjustedDistance = Math.round(distance * roadFactor * 10) / 10;
@@ -138,6 +154,17 @@ export function findNearestClinic(
 export async function geocodeAddress(address: string): Promise<{ lat: number; lon: number } | null> {
   const trimmed = address.trim();
   if (!trimmed) return null;
+
+  if (useGoogleMaps) {
+    try {
+      const googleCoords = await geocodeWithGoogle(trimmed);
+      if (googleCoords && !isNaN(googleCoords.lat) && !isNaN(googleCoords.lon)) {
+        return googleCoords;
+      }
+    } catch (err) {
+      console.warn('Google Geocode failed, using fallback:', err);
+    }
+  }
 
   try {
     const queryStr = trimmed.toLowerCase().includes('malaysia') ? trimmed : `${trimmed}, Malaysia`;

@@ -1,0 +1,377 @@
+By
+
+
+MUHAMMAD DANESH HAKIMI LOU BIN ABDULLAH
+
+
+Project Supervisor : Dr. Siti Rohana
+
+
+A Project Report Submitted to the 
+College of Computing and Informatics
+Universiti Tenaga Nasional 
+
+
+in Partial Fulfilment of the Requirements for the
+Bachelor Of Software Engineering (Hons.)
+
+
+SEPTEMBER 2026
+
+
+________________
+
+
+DECLARATION
+I hereby declare that this Final Year Project entitled “HealthGrid IQ: A Digital Healthcare Information and Assistance System” is my own work except where due acknowledgement has been made to the work of others.
+I understand that any use of ideas, information, data, software, or other materials belonging to other parties must be appropriately acknowledged and referenced.
+I further declare that this project has been conducted in accordance with the academic integrity requirements of Universiti Tenaga Nasional.
+Student Name: Muhammad Danesh Hakimi Lou
+Student ID: [YOUR STUDENT ID]
+Programme: Bachelor of Software Engineering (Honours)
+Project Title: HealthGrid IQ: A Digital Healthcare Information and Assistance System
+
+Date: [DATE]
+
+Signature: ____________________
+
+
+________________
+
+
+APPROVAL PAGE
+This thesis entitled:
+“HEALTHGRID IQ: A DIGITAL HEALTHCARE INFORMATION AND ASSISTANCE SYSTEM”
+submitted by:
+MUHAMMAD DANESH HAKIMI LOU
+in partial fulfilment of the requirements for the degree of
+Bachelor of Software Engineering (Honours)
+College of Computing and Informatics
+Universiti Tenaga Nasional
+has been accepted.
+Supervisor:
+ Madam Rohana
+Signature: ____________________
+Date: ____________________
+________________
+
+
+ABSTRACT
+Healthcare organisations manage large amounts of patient, clinical, and medical imaging information throughout the delivery of healthcare services. The management of this information may involve multiple processes and systems, particularly within medical imaging workflows where patient information, medical images, clinical findings, and reports need to be managed and accessed by authorised healthcare professionals. These processes create an opportunity for digital solutions that can provide a more organised and integrated approach to healthcare information management.
+This project proposes HealthGrid IQ, a digital healthcare information and assistance system designed to support selected healthcare workflows involving patient information, medical imaging, clinical findings, and reporting. The system aims to provide a centralised environment in which authorised healthcare users can manage relevant information and perform selected clinical workflow activities. The project also investigates the incorporation of artificial intelligence as an assistive component to support selected healthcare-related tasks while maintaining healthcare professional oversight.
+The development of HealthGrid IQ will involve requirements analysis, system design, software development, and system evaluation. Relevant technologies and concepts including healthcare information systems, medical imaging informatics, DICOM, PACS, interoperability, clinical reporting, and artificial intelligence will be investigated to guide the system design.
+The expected outcome of the project is a functional prototype that demonstrates how a digital healthcare information and assistance system can support selected healthcare workflows. The system is not intended to replace healthcare professionals or independently make clinical decisions. Instead, it is intended to provide software-based assistance while allowing qualified healthcare professionals to review and validate relevant information.
+________________
+
+
+CHAPTER 1 : INTRODUCTION
+1.1 Project Background
+Healthcare facilities manage a large amount of information throughout the delivery of healthcare services. This includes patient information, clinical records, examination requests, medical images, clinical findings, and reports. Healthcare professionals need this information to be properly recorded, organized, and accessible throughout different stages of the healthcare process. Effective information management is therefore important to support the continuity of healthcare services and the coordination between healthcare professionals involved in patient care.
+Despite the increasing availability of digital technologies, some healthcare processes still involve manual documentation and physical handling of information. Preliminary observations conducted at Klinik Kesihatan Bestari Jaya provided an opportunity to observe how certain healthcare and radiology-related processes are carried out in a real healthcare environment. The observation identified the continued use of physical documentation for managing cases and recording healthcare information. Such processes require healthcare personnel to manually record, handle, and transfer information, which may increase the possibility of documents being misplaced or becoming difficult to retrieve when required.
+One example observed was the use of the Borang Permohonan Pemeriksaan Radiologi for requesting radiology examinations. The form contains various patient, clinical, examination, and administrative information, including patient identification details, requested imaging services, clinical summaries, and other examination-related information. The corresponding radiology report is also documented through a structured form. The use of physical forms introduces additional manual steps in the radiology workflow, particularly when information needs to be submitted, processed, recorded, and subsequently communicated between healthcare professionals.
+The radiology workflow involves multiple healthcare professionals with different responsibilities. A Medical Officer may initiate an imaging request based on a patient's clinical needs, while a Radiographer performs the required imaging examination. The resulting medical images can then be reviewed by a Radiologist, who interprets the images and prepares the radiology report before the findings are made available to the relevant healthcare professional. When these activities rely on physical documentation and manual information transfer, the workflow may involve unnecessary duplication and additional administrative effort.
+________________
+
+
+Digital healthcare systems provide an opportunity to organize these processes through a centralized environment where authorized healthcare professionals can access and manage relevant information. Instead of relying primarily on physical forms and documents, patient and case information can be recorded digitally and made available to the appropriate healthcare professionals throughout the workflow. This can also provide a foundation for integrating intelligent technologies into selected healthcare processes. For example, artificial intelligence can be used to assist with medical image analysis and report generation, while healthcare professionals remain responsible for reviewing and validating the resulting information.
+In addition to clinical information management, healthcare facilities may have different levels of workload, personnel availability, and access to medical imaging equipment. This creates a need to consider healthcare resources when coordinating imaging services. An intelligent scheduling and resource coordination mechanism could assist healthcare personnel in identifying suitable facilities or available resources based on factors such as facility workload, imaging equipment availability, and geographical considerations. For areas with limited access to imaging services, including rural or hard-to-reach locations, the coordination of mobile imaging resources could provide another approach to improving access to imaging services. Similarly, mobile imaging resources could potentially be deployed to healthcare facilities that require additional imaging capacity.
+Therefore, HealthGrid IQ: A Digital Healthcare Information and Assistance System is proposed as a digital healthcare system designed to support healthcare professionals in managing patient information and clinical workflows. The system aims to reduce reliance on manual documentation by providing a centralized digital environment for healthcare information and workflow management. HealthGrid IQ further incorporates intelligent assistance through AI-assisted radiology reporting, imaging scheduling and resource coordination, while supporting the coordination of medical imaging resources. Through the integration of digital information management and intelligent assistance, the system aims to support more organized, accessible, and efficient healthcare processes while maintaining healthcare professionals as the primary decision-makers in clinical activities.
+________________
+
+
+1.2 Problem Statement
+1.2.1 Reliance on Manual Documentation
+The current medical imaging workflow observed during the project investigation involves the use of physical documentation to record patient and radiology-related information. The use of hardcopy documents requires healthcare personnel to manually record, update, and transfer information throughout different stages of the imaging process.
+A manual documentation process may introduce several operational issues. Physical documents can be misplaced, damaged, incompletely filled, or delayed during transfer between personnel. In addition, manually recorded information can be more difficult to track compared with information stored within a centralized digital system. These limitations may affect the efficiency of managing imaging cases and make it more difficult for healthcare personnel to determine the current status of a case.
+Therefore, there is a need for a digital approach that allows patient, imaging, findings, and reporting information to be recorded and managed within a centralized system.
+1.2.2 Delays in the Medical Imaging Workflow
+The medical imaging process may require patients to wait for an available imaging appointment depending on the facility's capacity and workload. Following image acquisition, additional time may be required for the images to be reviewed and for a radiology report to be prepared, particularly when specialist reporting is required externally.
+Based on the project's observation of the workflow at Klinik Kesihatan Bestari Jaya, the process may involve several stages of waiting, including waiting for an imaging slot, sending the imaging case for external review, and receiving the completed report. These stages can result in an extended overall turnaround time before the Medical Officer receives the final result.
+The lack of an integrated system for tracking these stages can make it difficult for healthcare personnel to determine where a case is currently located within the workflow and whether further action is required.
+________________
+1.2.3 Fragmented Case Coordination
+Medical imaging cases may involve several healthcare personnel, including Medical Officers, Radiographers, Radiologists, and administrative personnel. Each role is responsible for different activities throughout the imaging and reporting process.
+When information and communication are handled through separate processes, coordination between these personnel can become fragmented. Healthcare personnel may need to manually determine whether an image has been acquired, whether a report has been prepared, whether specialist review is required, or whether an external facility is involved.
+A centralized workflow management system could provide a common platform for managing the status and progression of imaging cases while restricting information and functions according to the responsibilities of each user role.
+1.2.4 Limited Coordination When Imaging Capacity Is Unavailable
+Healthcare facilities may experience situations where an imaging examination cannot be performed locally because of equipment maintenance, equipment failure, limited capacity, or other operational constraints.
+When this occurs, administrative personnel may need to identify another healthcare facility capable of providing the required imaging service. The suitability of an external facility can depend on factors such as the required imaging modality, facility availability, equipment status, and geographical distance.
+Without an integrated coordination mechanism, this process can require additional manual communication and decision-making. HealthGrid IQ therefore proposes a digital mechanism to assist administrative personnel in identifying and coordinating suitable external facilities when local imaging capacity is unavailable.
+1.2.5 Need for AI-Assisted Reporting Support
+The preparation of radiology findings and reports can involve substantial documentation work. HealthGrid IQ therefore proposes the use of an AI-assisted component to support the generation of preliminary findings or report content.
+The purpose of the AI component is not to replace healthcare professionals or autonomously diagnose patients. Instead, the generated output is intended to act as supporting information that can be reviewed by the appropriate healthcare personnel before a final report or clinical decision is made.
+This approach allows AI functionality to be incorporated into the workflow while maintaining human oversight over the final interpretation and reporting process.
+
+
+________________
+1.3 Project Objective
+The objective of Healthgrid IQ are:
+
+
+1. To analyse the existing medical imaging workflow and identify the functional and non-functional requirements of a digital radiology workflow management system.
+2. To design and develop HealthGrid IQ for managing patients, imaging requests, medical images, findings, reports, and case status throughout the medical imaging workflow.
+3. To implement an AI-assisted functionality that supports preliminary medical image analysis and report generation while maintaining healthcare professional review and oversight.
+4. To develop an external imaging coordination mechanism that assists administrative personnel in identifying and coordinating suitable healthcare facilities when the required imaging service is unavailable locally.
+5. To evaluate the developed system based on the identified functional requirements and usability within the defined project scope.
+________________
+1.4 Scope
+1.4.1 Patient and Case Management
+HealthGrid IQ will provide functionality for authorized healthcare personnel to register patients and create medical imaging cases. Patient information, clinical information, imaging requests, and case status will be stored digitally.
+1.4.2 Medical Imaging Workflow
+The system will support the workflow from imaging request creation to image acquisition, image upload, review, reporting, and delivery of the final result.
+The main workflow will involve:
+Medical Officer → Radiographer → AI-Assisted Analysis → Radiographer Review → Radiologist if required → Medical Officer
+The system will maintain the status of each case to allow authorized users to track its progress.
+1.4.3 AI-Assisted Reporting
+The system will include an AI-assisted component that can analyse uploaded medical imaging data and provide preliminary findings or assist in generating report content.
+The AI output will not be treated as a final diagnosis. Healthcare professionals will remain responsible for reviewing and validating the information before a final clinical report is produced.
+1.4.4 Radiologist Review
+Cases requiring specialist interpretation can be escalated to a Radiologist through the system. The Radiologist will be able to review the relevant patient information, imaging data, and preliminary information before preparing the final radiology report.
+________________
+1.4.5 External Facility Coordination
+The system will provide administrative personnel with functionality for coordinating imaging cases that cannot be handled at the patient's original facility.
+Potential factors for identifying a suitable facility include:
+* Required imaging modality
+* Facility availability
+* Equipment availability
+* Equipment status
+* Distance between facilities
+* Operational capacity
+The system will assist with the recommendation or identification process, while the final decision to coordinate the case remains with the authorized administrative personnel.
+1.4.6 User Roles
+The system will support role-based access for the following primary users:
+Role
+	Main Responsibility
+	Medical Officer
+	Register patients, create imaging cases, review final results
+	Radiographer
+	Perform imaging, upload images, review cases, escalate cases
+	Radiologist
+	Review imaging cases and prepare specialist reports
+	Administrator
+	Manage users, facilities, equipment, and external case coordination
+	1.4.7 Project Limitations
+The project will not cover:
+* Autonomous medical diagnosis
+* Autonomous clinical decision-making
+* Hospital billing and payment
+* Insurance management
+* Pharmacy management
+* Laboratory management
+* Complete Hospital Information System functionality
+* Physical control of medical imaging equipment
+* Nationwide healthcare deployment
+* Direct replacement of qualified healthcare professionals
+A mobile imaging unit may be considered as a future extension rather than a core implementation of the current project.
+CHAPTER 2 : LITERATURE REVIEW
+
+
+2.1 Introduction
+This chapter reviews the concepts, technologies, and existing systems related to the development of HealthGrid IQ. The review focuses on digital healthcare systems, healthcare information management, medical imaging workflows, Radiology Information Systems (RIS), Picture Archiving and Communication Systems (PACS), Digital Imaging and Communications in Medicine (DICOM), artificial intelligence in medical imaging, and external radiology coordination.
+The purpose of this chapter is to establish the technological and operational background required for the development of HealthGrid IQ and to identify how these concepts can be incorporated into the proposed system.
+2.2 Digital Healthcare Systems
+Digital healthcare systems use information technology to support the management, storage, retrieval, and exchange of healthcare information.
+Traditional healthcare workflows may involve physical documents and separate processes for recording and transferring information. Digital systems provide an alternative by allowing information to be stored electronically and accessed by authorized personnel through a centralized platform.
+For HealthGrid IQ, digitalization is particularly important because an imaging case can involve multiple stages and multiple healthcare personnel. A centralized system can provide a single location for managing patient information, imaging requests, images, findings, reports, and case status.
+The implementation of a digital workflow can therefore reduce dependency on physical documentation and improve visibility of the overall case lifecycle.
+
+
+________________
+2.3 Healthcare Information Management
+Healthcare information management refers to the collection, organization, storage, retrieval, and management of healthcare-related information.
+In a medical imaging workflow, information may include:
+* Patient identification
+* Clinical information
+* Imaging requests
+* Imaging modality
+* Medical images
+* Preliminary findings
+* Radiology reports
+* Case status
+* User activity
+HealthGrid IQ applies healthcare information management by organizing these types of information within a structured digital workflow.
+The system also uses role-based access so that different healthcare personnel can access functions relevant to their responsibilities
+2.4 Healthcare Interoperability
+Healthcare interoperability refers to the ability of different healthcare systems and applications to exchange and use information effectively.
+Interoperability is relevant to medical imaging because imaging information may need to move between different systems or healthcare facilities. A radiology workflow can involve a Medical Officer, Radiographer, Radiologist, and potentially an external facility.
+HealthGrid IQ considers interoperability through the organization of patient, imaging, and reporting information in structured digital records. The project also considers established medical imaging standards such as DICOM for handling medical imaging information.
+
+
+________________
+2.5 Medical Imaging Informatics
+Medical imaging informatics involves the use of information technology to manage medical imaging data and workflows.
+Medical imaging systems need to handle both the images themselves and the associated information required to interpret and manage those images.
+For example, an imaging case may contain:
+Patient → Imaging Request → Modality → Image → Findings → Report
+Managing these components digitally allows the imaging case to be tracked throughout its lifecycle.
+HealthGrid IQ applies this concept by connecting patient information, imaging requests, uploaded images, AI-assisted findings, professional review, and final reports within one workflow.
+
+
+2.6 Radiology Information System (RIS)
+A Radiology Information System (RIS) is a healthcare information system used to manage information and workflows associated with radiology services.
+Typical RIS-related functions may include:
+* Patient registration
+* Imaging requests
+* Scheduling
+* Examination tracking
+* Reporting
+* Radiology workflow management
+The concept of RIS is relevant to HealthGrid IQ because the proposed system also manages the administrative and workflow components of medical imaging.
+However, HealthGrid IQ extends the workflow concept by incorporating AI-assisted reporting support and external imaging facility coordination within the proposed system.
+
+
+________________
+2.7 Picture Archiving and Communication System (PACS)
+A Picture Archiving and Communication System (PACS) is used for storing, retrieving, managing, and viewing medical images.
+PACS is an important component of digital radiology because medical images need to be accessible to authorized healthcare professionals during the interpretation and reporting process.
+Within HealthGrid IQ, imaging data is an important part of the case lifecycle. The Radiographer uploads the acquired image, after which authorized users can access the relevant image during the review and reporting stages.
+The proposed system therefore incorporates the concept of digital image storage and access found in PACS while integrating it with the broader healthcare workflow.
+________________
+
+
+2.8 Digital Imaging and Communications in Medicine (DICOM)
+DICOM is a standard used for the communication and management of medical imaging information.
+The standard is particularly important in medical imaging because images generated by different imaging equipment and systems need a consistent format for storage and communication.
+HealthGrid IQ considers DICOM as part of its medical imaging architecture because the project involves the handling and management of medical images.
+The use of an established imaging standard can also support compatibility with medical imaging systems and technologies in a real-world environment.
+________________
+
+
+2.9 Radiology Workflow and Case Management
+A radiology workflow consists of multiple stages that begin when an imaging examination is requested and continue until the result is reviewed and communicated.
+A simplified workflow relevant to HealthGrid IQ is:
+Patient Registration
+↓
+Imaging Request
+↓
+Imaging Examination
+↓
+Image Upload
+↓
+Preliminary Analysis / Reporting Support
+↓
+Professional Review
+↓
+Radiologist Review if Required
+↓
+Final Report
+↓
+Medical Officer Review
+This workflow demonstrates that radiology is not limited to image acquisition. It also requires coordination between different users and activities.
+HealthGrid IQ therefore focuses on managing the complete case lifecycle instead of providing an isolated image analysis function.
+________________
+
+
+2.10 Artificial Intelligence in Medical Imaging
+Artificial intelligence can be incorporated into medical imaging applications to assist with the processing and interpretation of medical images.
+AI-based functionality may be used to identify patterns within images, assist with image analysis, or provide supporting information to healthcare professionals.
+In HealthGrid IQ, AI is positioned as an assistive technology rather than an autonomous replacement for healthcare professionals.
+The AI component provides preliminary information that can subsequently be reviewed by the appropriate healthcare personnel. This approach allows the system to use AI while keeping professional judgement within the workflow.
+________________
+
+
+2.11 AI-Assisted Reporting
+AI-assisted reporting refers to the use of artificial intelligence to support the generation or preparation of medical reports.
+For HealthGrid IQ, the AI component is intended to assist with the preparation of preliminary findings or report content after medical imaging data has been submitted to the system.
+The generated information is treated as preliminary output rather than a final medical report. The healthcare professional remains responsible for reviewing the information, correcting inaccurate content where necessary, and approving the final result.
+This approach is important because the proposed system is intended to improve workflow efficiency while maintaining human oversight.
+________________
+
+
+2.12 Human Oversight in AI-Assisted Healthcare
+AI functionality in healthcare requires appropriate human oversight because AI-generated output may contain inaccurate or incomplete information.
+Therefore, HealthGrid IQ does not allow AI-generated findings to automatically become the final clinical result.
+The proposed workflow requires professional review before a case is finalized. Depending on the workflow, the case may be reviewed by a Radiographer and escalated to a Radiologist when specialist interpretation is required.
+This design establishes a distinction between:
+AI Output → Professional Review → Final Report
+rather than:
+AI Output → Automatic Diagnosis
+This distinction is central to the proposed system.
+________________
+
+
+2.13 External Imaging Facility Coordination
+Healthcare facilities may not always have sufficient imaging capacity to handle every imaging request. Possible limitations include unavailable equipment, equipment maintenance, technical problems, or excessive workload.
+In such situations, an imaging case may need to be coordinated with another healthcare facility.
+HealthGrid IQ proposes an external facility coordination mechanism that allows administrative personnel to identify facilities that may be capable of handling a particular imaging requirement.
+The system can consider factors such as:
+* Imaging modality
+* Facility availability
+* Equipment status
+* Distance
+* Operational capacity
+The administrator remains responsible for confirming the selected facility.
+This allows the system to function as a coordination and decision-support mechanism, rather than autonomously transferring patients between healthcare facilities.
+________________
+
+
+________________
+2.14 Role-Based Access Control
+Role-based access control is a security approach in which system permissions are assigned according to a user's role.
+This is particularly relevant to healthcare systems because different users require different levels of access to patient and medical information.
+HealthGrid IQ applies role-based access through its main user groups.
+User
+	Example Access
+	Medical Officer
+	Patient registration, imaging requests, final results
+	Radiographer
+	Imaging cases, image upload, case review
+	Radiologist
+	Image review, specialist reporting
+	Administrator
+	Users, facilities, equipment, coordination
+	This approach limits system functions according to the responsibilities of each user and helps prevent unauthorized modification of healthcare information.
+________________
+
+
+________________
+2.16 Proposed System Concept
+Based on the concepts reviewed in this chapter, HealthGrid IQ combines several components into a single workflow.
+The proposed architecture can be conceptually represented as:
+Medical Officer
+→ Patient Registration
+→ Imaging Request
+Radiographer
+→ Receive Case
+→ Perform Imaging
+→ Upload Image
+HealthGrid IQ
+→ Store Case and Image
+→ AI-Assisted Analysis
+→ Preliminary Findings
+Radiographer
+→ Review
+→ Escalate if Required
+Radiologist
+→ Specialist Review
+→ Final Report
+Medical Officer
+→ Review Result
+→ Continue Patient Management
+Meanwhile:
+Administrator
+→ Manage Users
+→ Manage Facilities
+→ Manage Equipment
+→ Coordinate External Imaging Cases
+This approach keeps HealthGrid IQ focused on the radiology case lifecycle and coordination problem, rather than attempting to become a complete hospital management system.
+________________
+
+
+2.17 Research / Project Gap
+Existing healthcare technologies provide individual capabilities for managing healthcare information, radiology workflows, and medical images. RIS and PACS, for example, address important aspects of radiology information and image management.
+However, the proposed HealthGrid IQ project focuses specifically on combining several workflow components into a unified system designed around the identified workflow problems.
+The proposed system brings together:
+1. Digital patient and imaging case management.
+2. Medical image management.
+3. AI-assisted preliminary reporting.
+4. Professional review and escalation.
+5. Final radiology reporting.
+6. External imaging facility coordination.
+7. Role-based access.
+The project therefore focuses on the integration of these functions into one defined radiology workflow, rather than developing an isolated AI image-analysis application.
+________________
+
+
+2.18 Summary
+This chapter discussed the main concepts related to the development of HealthGrid IQ, including digital healthcare systems, healthcare information management, medical imaging workflow, case management, AI-assisted medical imaging, professional review, external facility coordination, role-based access, case tracking, and notifications. These concepts provide the foundation for the design and development of HealthGrid IQ as a digital medical imaging workflow management system.

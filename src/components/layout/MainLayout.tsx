@@ -7,7 +7,6 @@ import ImpersonationBanner from '../common/ImpersonationBanner';
 import ErrorBoundary from '../ux/ErrorBoundary';
 import SessionTimeout from '../ux/SessionTimeout';
 import PageLoader from '../ux/PageLoader';
-import HealthGridMascot from '../mascot/HealthGridMascot';
 
 export default function MainLayout() {
   const { currentUser } = useAuth();
@@ -57,7 +56,6 @@ export default function MainLayout() {
       </div>
 
       <SessionTimeout />
-      <HealthGridMascot />
     </div>
   );
 }

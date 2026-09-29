@@ -55,7 +55,7 @@ export const ALL_NAV_MODULES: NavModuleDefinition[] = [
     id: 'reporting',
     label: 'Diagnostic Hub & Reports',
     category: 'Clinical Core',
-    description: '3-in-1 triage queue, PACS diagnostic desk, AI Copilot, and signed reports archive.',
+    description: '3-in-1 triage queue, PACS diagnostic desk, diagnostic reporting, and signed reports archive.',
     defaultPath: '/review-queue',
     iconName: 'FileText',
   },

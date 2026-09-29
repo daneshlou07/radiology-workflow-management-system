@@ -169,6 +169,7 @@ export default function DiagnosticHub({ initialTab }: DiagnosticHubProps) {
     cases,
     reports,
     users,
+    patients,
     crossOrgReferrals,
     addReport,
     addReportAddendum,
@@ -218,6 +219,15 @@ export default function DiagnosticHub({ initialTab }: DiagnosticHubProps) {
   const [criticalFindingNote, setCriticalFindingNote] = useState('');
   const [saving, setSaving] = useState(false);
   const [isVisionAiAnalyzing, setIsVisionAiAnalyzing] = useState(false);
+  const [aiAnalysisMetadata, setAiAnalysisMetadata] = useState<{
+    aiModel: string;
+    indication: string;
+    historySummary: string;
+    clinicalCorrelation?: string;
+    clinicalMismatchAlert?: string;
+    confidenceScore: number;
+    detectedFeatures?: string[];
+  } | null>(null);
   const [showEscalateModal, setShowEscalateModal] = useState(false);
   const [selectedRadiologistId, setSelectedRadiologistId] = useState<string>('');
   const [escalateReason, setEscalateReason] = useState('Suspected Abnormality / Requires Specialist Opinion');
@@ -339,29 +349,58 @@ export default function DiagnosticHub({ initialTab }: DiagnosticHubProps) {
       setIsCriticalFinding(!!selectedCase.isCriticalFinding);
       setCriticalFindingNote(selectedCase.criticalFindingNote || '');
     }
+    setAiAnalysisMetadata(null);
   }, [selectedCase?.id, existingReport]);
 
-  // AI draft generator
+  // AI Clinical Decision Support System (CDSS) draft generator
   const handleGenerateAiDraft = async () => {
     if (!selectedCase) return;
     setIsVisionAiAnalyzing(true);
     try {
+      const matchingPatient = patients?.find((p) => p.id === selectedCase.patientId);
+
       if (selectedCase.images && selectedCase.images.length > 0) {
         const loaded = await loadImages([selectedCase.images[0]]);
         if (loaded.length > 0) {
-          const result = await analyzeImageWithVisionAi(loaded[0], selectedCase);
+          const result = await analyzeImageWithVisionAi(loaded[0], selectedCase, matchingPatient);
           setFindings(result.findings);
           setImpression(result.impression);
-          toast.success(`AI Diagnostic draft generated (${result.confidenceScore}% confidence).`);
+          if (result.suggestions) setSuggestions(result.suggestions);
+          if (result.isCritical) {
+            setIsCriticalFinding(true);
+            if (result.criticalReason) {
+              setCriticalFindingNote(result.criticalReason);
+            }
+          }
+          setAiAnalysisMetadata({
+            aiModel: result.aiModel,
+            indication: selectedCase.indication || selectedCase.ringkasanKlinikal || selectedCase.notes || 'Clinical evaluation',
+            historySummary: matchingPatient?.medicalHistory && matchingPatient.medicalHistory.length > 0
+              ? matchingPatient.medicalHistory.join(', ')
+              : 'No prior chronic conditions recorded',
+            clinicalCorrelation: result.clinicalCorrelationNotes,
+            clinicalMismatchAlert: result.clinicalMismatchAlert,
+            confidenceScore: result.confidenceScore,
+            detectedFeatures: result.detectedFeatures,
+          });
+          toast.success(`Clinical CDSS draft generated with patient history grounding (${result.confidenceScore}% confidence).`);
           return;
         }
       }
 
-      const draft = generateAiReportDraft(selectedCase);
+      const draft = generateAiReportDraft(selectedCase, matchingPatient);
       setFindings(draft.findings);
       setImpression(draft.impression);
       if (draft.suggestions) setSuggestions(draft.suggestions);
-      toast.success(`Protocol draft generated (${draft.confidenceScore}% confidence).`);
+      setAiAnalysisMetadata({
+        aiModel: 'HealthGrid Clinical CDSS (Protocol Engine)',
+        indication: selectedCase.indication || selectedCase.ringkasanKlinikal || selectedCase.notes || 'Clinical evaluation',
+        historySummary: matchingPatient?.medicalHistory && matchingPatient.medicalHistory.length > 0
+          ? matchingPatient.medicalHistory.join(', ')
+          : 'No prior chronic conditions recorded',
+        confidenceScore: draft.confidenceScore,
+      });
+      toast.success(`Clinical protocol draft generated (${draft.confidenceScore}% confidence).`);
     } catch {
       toast.error('AI draft generation failed. Please enter findings manually.');
     } finally {
@@ -606,7 +645,7 @@ export default function DiagnosticHub({ initialTab }: DiagnosticHubProps) {
             Diagnostic Review &amp; Reporting Hub
           </h1>
           <p className="text-sm text-surface-500 mt-0.5">
-            Triage incoming medical scans, author diagnostic reports with AI Copilot, and manage finalized report archives.
+            Triage incoming medical scans, author diagnostic reports, and manage finalized report archives.
           </p>
         </div>
       </div>
@@ -1325,12 +1364,12 @@ export default function DiagnosticHub({ initialTab }: DiagnosticHubProps) {
                         type="button"
                         onClick={handleGenerateAiDraft}
                         disabled={isVisionAiAnalyzing}
-                        className="inline-flex items-center gap-2 px-3.5 py-2 rounded-lg border border-purple-200 bg-purple-50 text-purple-700 hover:bg-purple-100 hover:border-purple-300 disabled:opacity-60 disabled:cursor-not-allowed text-xs font-semibold transition-all"
+                        className="inline-flex items-center gap-2 px-3.5 py-2 rounded-lg border border-[#0F4C42]/25 bg-[#0F4C42]/5 text-[#0F4C42] hover:bg-[#0F4C42]/10 hover:border-[#0F4C42]/40 disabled:opacity-60 disabled:cursor-not-allowed text-xs font-semibold transition-all shadow-xs"
                       >
                         <Sparkles
-                          className={`w-3.5 h-3.5 ${isVisionAiAnalyzing ? 'animate-pulse' : ''}`}
+                          className={`w-3.5 h-3.5 ${isVisionAiAnalyzing ? 'animate-pulse text-[#0F4C42]' : ''}`}
                         />
-                        {isVisionAiAnalyzing ? 'Analyzing…' : 'Analyze with AI'}
+                        {isVisionAiAnalyzing ? 'Evaluating Patient History & Pixels…' : 'Generate Clinical CDSS Draft'}
                       </button>
                     )}
                   </div>
@@ -1381,6 +1420,86 @@ export default function DiagnosticHub({ initialTab }: DiagnosticHubProps) {
                       <p className="text-[11px] text-purple-700">
                         The preliminary findings and impressions entered by {selectedCase.preliminaryAuthorName} have been pre-filled below for your in-house specialist review, refinement, and final sign-off.
                       </p>
+                    </div>
+                  )}
+
+                  {/* Clinical CDSS Grounding & Context Card */}
+                  {aiAnalysisMetadata && (
+                    <div className="rounded-xl border border-[#0F4C42]/25 bg-[#0F4C42]/5 p-4 text-slate-800 space-y-2.5">
+                      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+                        <div className="flex items-center gap-2">
+                          <Sparkles className="w-4 h-4 text-[#0F4C42] shrink-0" />
+                          <span className="text-xs font-bold uppercase tracking-wider text-[#0F4C42]">
+                            Clinical Decision Support System (CDSS)
+                          </span>
+                        </div>
+                        <div className="flex items-center gap-2">
+                          <span className="text-[10px] font-mono font-semibold px-2 py-0.5 rounded bg-white border border-[#0F4C42]/20 text-[#0F4C42]">
+                            {aiAnalysisMetadata.aiModel}
+                          </span>
+                          <span className="text-[10px] font-bold px-2 py-0.5 rounded bg-emerald-100 text-emerald-800 border border-emerald-200">
+                            {aiAnalysisMetadata.confidenceScore}% Confidence
+                          </span>
+                        </div>
+                      </div>
+
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-2 text-xs pt-1.5 border-t border-[#0F4C42]/15">
+                        <div className="bg-white/80 p-2.5 rounded-lg border border-slate-200">
+                          <span className="block text-[10px] font-bold uppercase tracking-wider text-slate-500 mb-0.5">
+                            Patient Medical History Grounded
+                          </span>
+                          <span className="text-slate-800 font-medium text-[11px]">
+                            {aiAnalysisMetadata.historySummary}
+                          </span>
+                        </div>
+
+                        <div className="bg-white/80 p-2.5 rounded-lg border border-slate-200">
+                          <span className="block text-[10px] font-bold uppercase tracking-wider text-slate-500 mb-0.5">
+                            Presenting Clinical Indication
+                          </span>
+                          <span className="text-slate-800 font-medium text-[11px]">
+                            {aiAnalysisMetadata.indication}
+                          </span>
+                        </div>
+                      </div>
+
+                      {aiAnalysisMetadata.clinicalCorrelation && (
+                        <div className="text-xs text-slate-800 bg-white/90 p-2.5 rounded-lg border border-[#0F4C42]/20">
+                          <span className="font-bold text-[#0F4C42] block text-[10px] uppercase tracking-wider mb-0.5">
+                            Pathology &amp; Symptom Correlation:
+                          </span>
+                          <p className="text-[11px] leading-relaxed text-slate-700">
+                            {aiAnalysisMetadata.clinicalCorrelation}
+                          </p>
+                        </div>
+                      )}
+
+                      {aiAnalysisMetadata.clinicalMismatchAlert && (
+                        <div className="p-3 rounded-lg bg-amber-50 border border-amber-300 text-amber-950 text-xs flex items-start gap-2.5">
+                          <AlertTriangle className="w-4 h-4 text-amber-600 shrink-0 mt-0.5" />
+                          <div>
+                            <strong className="block text-amber-900 font-bold mb-0.5">
+                              Clinical Discrepancy Flag:
+                            </strong>
+                            <span className="text-[11px] leading-relaxed">
+                              {aiAnalysisMetadata.clinicalMismatchAlert}
+                            </span>
+                          </div>
+                        </div>
+                      )}
+
+                      {aiAnalysisMetadata.detectedFeatures && aiAnalysisMetadata.detectedFeatures.length > 0 && (
+                        <div className="flex flex-wrap gap-1.5 pt-1">
+                          {aiAnalysisMetadata.detectedFeatures.map((feat, idx) => (
+                            <span
+                              key={idx}
+                              className="text-[10px] font-medium bg-white text-slate-700 border border-slate-200 px-2 py-0.5 rounded"
+                            >
+                              {feat}
+                            </span>
+                          ))}
+                        </div>
+                      )}
                     </div>
                   )}
 

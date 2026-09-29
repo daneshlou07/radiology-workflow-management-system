@@ -39,7 +39,7 @@ HealthGrid IQ is a full-stack single-page application (SPA) that manages the lif
 | State | React Context API + localStorage |
 | Database | Firebase Firestore (mock fallback) |
 | Auth | Firebase Auth (mock fallback) |
-| Maps | Leaflet + OpenStreetMap + OSRM |
+| Maps | Leaflet + Google Maps Platform (with OSRM fallback) |
 | Icons | Lucide React |
 
 ### How Data Persistence Works

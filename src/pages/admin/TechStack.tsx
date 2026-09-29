@@ -9,9 +9,9 @@ const services: ServiceStatus[] = [
   { name: 'Orthanc PACS Container (Docker)', status: 'online', latency: '4ms' },
   { name: 'Firebase Firestore', status: 'online', latency: '12ms' },
   { name: 'Firebase Authentication', status: 'online', latency: '8ms' },
-  { name: 'OSRM Routing API', status: 'online', latency: '45ms' },
-  { name: 'Nominatim Geocoding', status: 'online', latency: '120ms' },
-  { name: 'OpenStreetMap Tiles', status: 'online', latency: '30ms' },
+  { name: 'Google Maps Platform', status: 'online', latency: '25ms' },
+  { name: 'OSRM Routing API (Fallback)', status: 'online', latency: '45ms' },
+  { name: 'Nominatim Geocoding (Fallback)', status: 'online', latency: '120ms' },
 ];
 
 export default function TechStack() {

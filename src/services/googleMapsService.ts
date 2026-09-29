@@ -410,5 +410,59 @@ function decodePolyline(encoded: string): [number, number][] {
   return coords;
 }
 
+let googleMapsLoaderPromise: Promise<typeof google> | null = null;
+
+/**
+ * Dynamically loads the official Google Maps JavaScript SDK
+ */
+export function loadGoogleMapsSDK(apiKey: string = GOOGLE_MAPS_API_KEY): Promise<typeof google> {
+  if (typeof window !== 'undefined' && (window as any).google?.maps) {
+    return Promise.resolve((window as any).google);
+  }
+
+  if (!googleMapsLoaderPromise) {
+    googleMapsLoaderPromise = new Promise((resolve, reject) => {
+      if (!apiKey) {
+        return reject(new Error('Google Maps API key is not configured'));
+      }
+
+      if (typeof document === 'undefined') {
+        return reject(new Error('Window or document is not available'));
+      }
+
+      const existingScript = document.getElementById('google-maps-js-sdk');
+      if (existingScript) {
+        if ((window as any).google?.maps) {
+          resolve((window as any).google);
+        } else {
+          existingScript.addEventListener('load', () => resolve((window as any).google));
+          existingScript.addEventListener('error', (err) => reject(err));
+        }
+        return;
+      }
+
+      const script = document.createElement('script');
+      script.id = 'google-maps-js-sdk';
+      script.src = `https://maps.googleapis.com/maps/api/js?key=${apiKey}&libraries=places,geometry`;
+      script.async = true;
+      script.defer = true;
+      script.onload = () => {
+        if ((window as any).google?.maps) {
+          resolve((window as any).google);
+        } else {
+          reject(new Error('Google Maps SDK loaded, but google.maps namespace was not found.'));
+        }
+      };
+      script.onerror = (err) => {
+        googleMapsLoaderPromise = null;
+        reject(err);
+      };
+      document.head.appendChild(script);
+    });
+  }
+
+  return googleMapsLoaderPromise;
+}
+
 // Re-export for convenience
 export { useGoogleMaps, GOOGLE_MAPS_API_KEY };

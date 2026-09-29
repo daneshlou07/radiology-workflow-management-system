@@ -4,7 +4,7 @@
  * optimized for Malaysian residential addresses, postcodes, and landmarks.
  */
 
-import { reverseGeocode as googleReverseGeocode } from './googleMapsService';
+import { reverseGeocode as googleReverseGeocode, loadGoogleMapsSDK } from './googleMapsService';
 import { MALAYSIAN_HEALTHCARE_FACILITIES } from '../data/malaysianHealthcareFacilities';
 
 export interface AddressSuggestion {
@@ -529,8 +529,69 @@ async function fetchNominatimSuggestions(query: string): Promise<AddressSuggesti
   }
 }
 
+let googleAutocompleteService: google.maps.places.AutocompleteService | null = null;
+
 /**
- * Primary Search Function: Combines offline database & real-time online API suggestions
+ * Fetch real-time Malaysian address predictions from Google Places Autocomplete API
+ */
+async function fetchGooglePlacesSuggestions(query: string): Promise<AddressSuggestion[]> {
+  try {
+    const g = await loadGoogleMapsSDK();
+    if (!g || !g.maps || !g.maps.places) return [];
+
+    if (!googleAutocompleteService) {
+      googleAutocompleteService = new g.maps.places.AutocompleteService();
+    }
+
+    const predictions = await new Promise<google.maps.places.AutocompletePrediction[]>((resolve) => {
+      googleAutocompleteService!.getPlacePredictions(
+        {
+          input: query,
+          componentRestrictions: { country: 'my' },
+        },
+        (results, status) => {
+          if (status === g.maps.places.PlacesServiceStatus.OK && results) {
+            resolve(results);
+          } else {
+            resolve([]);
+          }
+        }
+      );
+    });
+
+    return predictions.map((pred, idx) => {
+      let type: AddressSuggestion['type'] = 'street';
+      const types = pred.types || [];
+      if (types.includes('hospital') || types.includes('health') || types.includes('doctor')) {
+        type = 'hospital';
+      } else if (
+        types.includes('sublocality') ||
+        types.includes('neighborhood') ||
+        types.includes('administrative_area_level_3')
+      ) {
+        type = 'taman';
+      } else if (types.includes('point_of_interest') || types.includes('establishment')) {
+        type = 'landmark';
+      }
+
+      return {
+        id: pred.place_id || `gplace-${idx}-${Date.now()}`,
+        formattedAddress: pred.description,
+        street: pred.structured_formatting?.main_text || '',
+        city: pred.structured_formatting?.secondary_text || 'Malaysia',
+        state: 'Malaysia',
+        type,
+        source: 'api' as const,
+      };
+    });
+  } catch (err) {
+    console.warn('Google Places autocomplete query failed, falling back to OSM:', err);
+    return [];
+  }
+}
+
+/**
+ * Primary Search Function: Combines offline database & real-time online API suggestions (Google Places first, OSM fallback)
  */
 export async function searchMalaysianAddresses(query: string): Promise<AddressSuggestion[]> {
   const trimmed = query.trim();
@@ -539,10 +600,26 @@ export async function searchMalaysianAddresses(query: string): Promise<AddressSu
   // 1. Get instant local database results
   const localResults = searchLocalDatabase(trimmed);
 
-  // 2. Fetch live online API suggestions asynchronously
+  // 2. Fetch live Google Places Autocomplete suggestions
+  try {
+    const googleResults = await fetchGooglePlacesSuggestions(trimmed);
+    if (googleResults.length > 0) {
+      const existingAddresses = new Set(googleResults.map((r) => r.formattedAddress.toLowerCase()));
+      const combined = [...googleResults];
+      for (const loc of localResults) {
+        if (!existingAddresses.has(loc.formattedAddress.toLowerCase())) {
+          combined.push(loc);
+        }
+      }
+      return combined.slice(0, 8);
+    }
+  } catch {
+    // Fall back to OSM
+  }
+
+  // 3. Fallback to Photon / Nominatim if Google Places returns empty or on error
   try {
     const photonResults = await fetchPhotonSuggestions(trimmed);
-    
     let combinedResults = [...photonResults];
 
     if (combinedResults.length === 0) {
@@ -551,8 +628,7 @@ export async function searchMalaysianAddresses(query: string): Promise<AddressSu
     }
 
     // Merge API results with local results, avoiding exact duplicates
-    const existingAddresses = new Set(combinedResults.map(r => r.formattedAddress.toLowerCase()));
-    
+    const existingAddresses = new Set(combinedResults.map((r) => r.formattedAddress.toLowerCase()));
     for (const loc of localResults) {
       if (!existingAddresses.has(loc.formattedAddress.toLowerCase())) {
         combinedResults.push(loc);

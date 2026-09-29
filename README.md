@@ -15,7 +15,7 @@ HealthGrid IQ is an enterprise-grade, HIPAA-compliant clinical imaging platform 
 - **Styling**: Tailwind CSS 3 (custom enterprise design system)
 - **Database**: Firebase Firestore (with localStorage mock fallback)
 - **Authentication**: Firebase Auth (with demo role-based fallback)
-- **Mapping**: Leaflet + OpenStreetMap + OSRM routing
+- **Mapping**: Leaflet + Google Maps Platform (with OSRM fallback)
 - **Icons**: Lucide React
 
 ## Documentation
