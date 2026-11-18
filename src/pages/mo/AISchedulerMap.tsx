@@ -638,20 +638,6 @@ export default function AISchedulerMap() {
 
   return (
     <div className="h-full flex flex-col -m-6 bg-[#F5F8F7]">
-      {/* Header */}
-      <div className="flex items-center justify-between px-6 py-3 bg-white border-b border-[#DCE6E3]">
-        <h1 className="text-base font-bold text-[#112A28]">AI Scheduling Dispatch</h1>
-        <div className="flex items-center gap-1 text-xs">
-          {(['select-case', 'map-routing', 'assign-radiographer', 'confirm'] as Step[]).map((s, i) => (
-            <React.Fragment key={s}>
-              {i > 0 && <ChevronRight className="w-3 h-3 text-surface-400" />}
-              <span className={`px-2.5 py-1 rounded-full transition-all ${step === s ? 'bg-[#0F4C42] text-white font-semibold shadow-sm' : 'text-surface-500'}`}>
-                {i + 1}. {s === 'select-case' ? 'Case' : s === 'map-routing' ? 'Route' : s === 'assign-radiographer' ? 'Assign' : 'Done'}
-              </span>
-            </React.Fragment>
-          ))}
-        </div>
-      </div>
 
       <div className="flex-1 flex flex-col lg:flex-row overflow-hidden">
         {/* Map */}
@@ -936,8 +922,8 @@ function AppointmentOverride({
                     setShowSlots(false);
                   }}
                   className={`p-2 text-xs font-medium rounded-lg border transition-colors text-left flex flex-col justify-between ${isOccupied
-                      ? 'border-amber-200 bg-amber-50/60 text-amber-900 hover:bg-amber-100'
-                      : 'border-surface-300 bg-white text-surface-700 hover:border-[#9FC8BE] hover:bg-[#F1F8F6]'
+                    ? 'border-amber-200 bg-amber-50/60 text-amber-900 hover:bg-amber-100'
+                    : 'border-surface-300 bg-white text-surface-700 hover:border-[#9FC8BE] hover:bg-[#F1F8F6]'
                     }`}
                 >
                   <div className="flex items-center justify-between gap-1 w-full">

@@ -486,8 +486,8 @@ function getNavGroups(
 
             {
               label: t(
-                'AI Scheduler',
-                'Penjadual AI'
+                'Scheduler',
+                'Penjadual'
               ),
               path: '/ai-scheduler',
               icon: (
@@ -759,7 +759,7 @@ function getLocalizedModuleLabel(id: string, defaultLabel: string, t: (en: strin
     case 'external_radiographer':
       return t('External Radiographer Hub', 'Hab Juruxray Luar');
     case 'ai_scheduler':
-      return t('AI Scheduler', 'Penjadual AI');
+      return t('Imaging Facility Scheduler', 'Penjadual AI');
     case 'fleet':
       return t('Mobile Fleet Management', 'Pengurusan Armada');
     case 'clinics':
